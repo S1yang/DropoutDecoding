@@ -74,7 +74,7 @@ def chair_eval(
         os.makedirs(output_dir)
 
     # annotation path should be under data dir
-    annotation_dir = f"{data_dir}/annotations"
+    annotation_dir = os.path.join(data_dir, "annotations")
     # load the generated captions
     _, imids, _ = chair.load_generated_captions(chair_input_path)
     print("load generation")
@@ -375,8 +375,7 @@ def main(args):
     # -------- begin json data eval --------
     loaded_json = []
 
-    generated_captions_path = args.output_dir
-    generated_captions_path = generated_captions_path + filename
+    generated_captions_path = os.path.join(args.output_dir, filename) 
     with open(generated_captions_path, "r") as f:
         lines = f.readlines()
         for line in lines:
@@ -432,10 +431,10 @@ def main(args):
     print(f"\nGenerated {len(img_to_eval_dict)} samples results in CHAIR format.")
 
     # save the formulated output dict
-    formulated_output_path = "./vlm_results/"
-    if not os.path.exists(formulated_output_path):
-        os.makedirs(formulated_output_path)
-    formulated_output_path = formulated_output_path + filename
+    formulated_output_dir = "./vlm_results"
+    if not os.path.exists(formulated_output_dir):
+        os.makedirs(formulated_output_dir)
+    formulated_output_path = os.path.join(formulated_output_dir, filename)
 
     with open(formulated_output_path, "w") as f:
         json.dump(formulated_output_dict, f)
@@ -468,8 +467,8 @@ if __name__ == "__main__":
     parser.add_argument("--original", type=bool, default=False)
     parser.add_argument("--num-beams", type=int, default=None)
     parser.add_argument("--sample-save-name", type=str, default="sample.log")
-    parser.add_argument("--image-numbers", type=int, default=500)
-    # parser.add_argument("--gpu-id", type=int, default=0)
+    parser.add_argument("--image-numbers", type=int, default=1000)
+    parser.add_argument("--gpu-id", type=int, default=0)
     parser.add_argument("--model", type=str, default="llava-1.5")
     parser.add_argument("--coco-data-dir", required=True, type=str, default=None)
     parser.add_argument("--model-path", required=True, type=str, default=None)
